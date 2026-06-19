@@ -11,7 +11,7 @@ import hashlib
 import json
 from typing import Any
 
-from .agent import model_reason
+from .agent import model_reason, Model
 from .audit import render_audit
 from .event_store import EventStore
 from .record_replay import RecordReplay, Mode
@@ -43,8 +43,8 @@ def exposure_check(request: dict[str, Any]) -> dict[str, Any]:
             "headroom": EXPOSURE_LIMIT_USD - notional}
 
 
-def run_trade_preapproval(request: dict[str, Any], store: EventStore,
-                          mode: Mode, fault: str | None = None) -> dict[str, Any]:
+def run_trade_preapproval(request: dict[str, Any], store: EventStore, mode: Mode,
+                          fault: str | None = None, model: Model | None = None) -> dict[str, Any]:
     rr = RecordReplay(store, mode)
     runner = DurableRunner(store)
     key = _request_key(request)  # step keys are scoped to this exact request
@@ -57,7 +57,7 @@ def run_trade_preapproval(request: dict[str, Any], store: EventStore,
     prompt = (f"Trade request {request}. compliance={compliance} exposure={exposure}. "
               "Decide APPROVE or REJECT with a rationale.")
     reasoning = model_reason(rr, f"model:{key}", prompt,
-                             {"compliance": compliance, "exposure": exposure})
+                             {"compliance": compliance, "exposure": exposure}, model=model)
 
     # APPROVE -> reserve buying power, then submit; submission failure rolls the reservation back
     executed: bool | None = None
