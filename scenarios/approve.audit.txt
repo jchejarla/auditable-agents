@@ -8,7 +8,7 @@ AUDIT TRAIL
       out: {"headroom": 2900000, "within_limit": true}
 [2] model_reason (model)
       prompt: Trade request {'account_id': 'ACC-001', 'symbol': 'AAPL', 'side': 'BUY', 'quantity': 10000, 'notional_usd': 2100000}. compliance={'passed': True, 'violations': []} exposure={'within_limit': True, 'headroom': 2900000}. Decide APPROVE or REJECT with a rationale.
-      out   : {"decision": "APPROVE", "rationale": "Compliance checks passed and trade is within the exposure limit."}
+      out   : {"confidence": 0.7245, "decision": "APPROVE", "rationale": "Compliance checks passed and trade is within the exposure limit."}
 [3] reserve_buying_power (saga) -> completed
 [4] submit_order (saga) -> completed
 [5] finalize_decision (decision) -> {"account_id": "ACC-001", "decision": "APPROVE", "executed": true, "rationale": "Compliance checks passed and trade is within the exposure limit.", "symbol": "AAPL"}

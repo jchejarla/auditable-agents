@@ -12,6 +12,7 @@ Run:  PYTHONPATH=src python examples/run_scenarios.py
 
 from __future__ import annotations
 
+import random
 from pathlib import Path
 
 from auditable_agents.event_store import EventStore
@@ -34,6 +35,10 @@ def run_one(name: str, request: dict, fault: str | None) -> None:
     OUT.mkdir(exist_ok=True)
     log = OUT / f"{name}.events.jsonl"
     log.unlink(missing_ok=True)
+
+    # The model stub is stochastic; seed it so this paper's figures are reproducible.
+    # (Replay never calls the model, so seeding only affects the recording run.)
+    random.seed(name)
 
     # record
     store = EventStore(log)

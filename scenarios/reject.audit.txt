@@ -8,7 +8,7 @@ AUDIT TRAIL
       out: {"headroom": -4000000, "within_limit": false}
 [2] model_reason (model)
       prompt: Trade request {'account_id': 'ACC-002', 'symbol': 'AAPL', 'side': 'BUY', 'quantity': 50000, 'notional_usd': 9000000}. compliance={'passed': True, 'violations': []} exposure={'within_limit': False, 'headroom': -4000000}. Decide APPROVE or REJECT with a rationale.
-      out   : {"decision": "REJECT", "rationale": "exposure exceeds limit (headroom -4000000)"}
+      out   : {"confidence": 0.5157, "decision": "REJECT", "rationale": "exposure exceeds limit (headroom -4000000)"}
 [3] finalize_decision (decision) -> {"account_id": "ACC-002", "decision": "REJECT", "rationale": "exposure exceeds limit (headroom -4000000)", "symbol": "AAPL"}
 ================================================================
 FINAL DECISION: {"account_id": "ACC-002", "decision": "REJECT", "rationale": "exposure exceeds limit (headroom -4000000)", "symbol": "AAPL"}
