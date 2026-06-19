@@ -20,6 +20,7 @@ from .saga import Saga, SagaStep
 
 RESTRICTED_SYMBOLS = {"RESTRICTEDCO"}
 EXPOSURE_LIMIT_USD = 5_000_000
+INITIAL_BUYING_POWER_USD = 10_000_000
 
 
 def _request_key(request: dict[str, Any]) -> str:
@@ -61,17 +62,30 @@ def run_trade_preapproval(request: dict[str, Any], store: EventStore,
     # APPROVE -> reserve buying power, then submit; submission failure rolls the reservation back
     executed: bool | None = None
     if reasoning["decision"] == "APPROVE":
+        # Reserve moves real state (buying power) so compensation has something to undo.
+        balance = {"buying_power": INITIAL_BUYING_POWER_USD}
+        notional = request["notional_usd"]
+
+        def _reserve() -> dict[str, Any]:
+            balance["buying_power"] -= notional
+            return {"buying_power": balance["buying_power"]}
+
+        def _release() -> dict[str, Any]:
+            balance["buying_power"] += notional
+            return {"buying_power": balance["buying_power"]}
+
         def _submit() -> None:
             if fault == "venue":
                 raise RuntimeError("execution venue rejected the order")
+
         try:
             Saga(store, mode, key).run([
-                SagaStep("reserve_buying_power", lambda: None, lambda: None),
+                SagaStep("reserve_buying_power", _reserve, _release),
                 SagaStep("submit_order", _submit, lambda: None),
             ])
             executed = True
         except Exception:
-            executed = False  # saga already compensated the reservation
+            executed = False  # saga already released the reservation
 
     def _finalize() -> dict[str, Any]:
         out = {"account_id": request["account_id"], "symbol": request["symbol"],

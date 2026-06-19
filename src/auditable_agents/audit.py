@@ -31,11 +31,13 @@ def render_audit(store: EventStore) -> str:
                       f"      prompt: {p.get('inputs', {}).get('prompt', '')}",
                       f"      out   : {_j(p.get('output', {}))}"]
         elif ev.kind == "saga_action":
-            lines.append(f"[{ev.seq}] {ev.step_id} (saga) -> {p.get('status')}")
+            bp = f"  buying_power={p['buying_power']}" if "buying_power" in p else ""
+            lines.append(f"[{ev.seq}] {ev.step_id} (saga) -> {p.get('status')}{bp}")
         elif ev.kind == "saga_failure":
             lines.append(f"[{ev.seq}] {ev.step_id} (saga FAILED) -> {p.get('error')}")
         elif ev.kind == "compensation":
-            lines.append(f"[{ev.seq}] {ev.step_id} (compensation) -> {p.get('status')}")
+            bp = f"  buying_power={p['buying_power']}" if "buying_power" in p else ""
+            lines.append(f"[{ev.seq}] {ev.step_id} (compensation) -> {p.get('status')}{bp}")
         elif ev.kind == "decision":
             final = p.get("output")
             lines.append(f"[{ev.seq}] {ev.step_id} (decision) -> {_j(final)}")
