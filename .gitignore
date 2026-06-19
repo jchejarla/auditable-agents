@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+*.pyc
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+*.events.jsonl
+run.events.jsonl
