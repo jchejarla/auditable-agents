@@ -56,10 +56,15 @@ The model is a plain callable, `(prompt, tool_results) -> {"decision", "rational
 - **Default:** an in-process stub (no dependencies, no cost). It draws a per-call confidence
   score, so its output genuinely **varies between calls** — which is what makes record-replay
   observable: two unguarded runs diverge, but a replayed run reproduces the recording exactly.
-- **Real LLM:** pass your own callable via the `model=` argument. See
-  [`examples/real_model.py`](examples/real_model.py) for a Claude example using structured
-  outputs (`pip install anthropic`, set `ANTHROPIC_API_KEY`). Record-replay captures the
-  model's output once, so even a stochastic model replays byte-for-byte.
+- **Real LLM:** pass your own callable via the `model=` argument. Two examples ship:
+  - [`examples/ollama_model.py`](examples/ollama_model.py) — a **local open-source model
+    via [Ollama](https://ollama.com)** (free, no API key; `ollama pull llama3.2`,
+    `pip install ollama`). Recommended for reproducing the live-model run.
+  - [`examples/real_model.py`](examples/real_model.py) — a hosted Claude model with
+    structured outputs (`pip install anthropic`, set `ANTHROPIC_API_KEY`).
+
+  Record-replay captures the model's output once, so even a real, stochastic model replays
+  byte-for-byte — exactly as the stub does.
 
 ## Reproducibility, demonstrated
 
