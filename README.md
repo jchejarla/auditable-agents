@@ -5,12 +5,13 @@ auditable** by applying four established distributed-systems techniques — **ev
 sourcing, idempotency, record-replay, and sagas** — to an agent workflow.
 
 LLM agents are non-deterministic and usually leave no complete record of what they did,
-which is hard to defend in regulated settings (finance, healthcare) that require decisions
+which is hard to defend in regulated settings — finance especially — that require decisions
 to be reconstructable and auditable. This is a small reference implementation of a pattern
-that fixes that — not a production framework.
+that fixes that — not a production framework. It is demonstrated on a trade pre-approval
+workflow, but the pattern is domain-agnostic.
 
-> Reference prototype for the article *"Making LLM-Agent Workflows Auditable: Bringing
-> Distributed-Systems Discipline to Agentic AI in Regulated Domains"* (in preparation).
+> Reference prototype for the article *"Making AI Trading Decisions Auditable:
+> Distributed-Systems Discipline for Agentic AI in Regulated Finance"* (in preparation).
 
 ## How it works
 
