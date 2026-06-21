@@ -66,6 +66,20 @@ The model is a plain callable, `(prompt, tool_results) -> {"decision", "rational
   Record-replay captures the model's output once, so even a real, stochastic model replays
   byte-for-byte — exactly as the stub does.
 
+### Validating with a real model
+
+To confirm the determinism is the layer's, not the stub's, record one decision from a real
+local open model and replay it:
+
+```bash
+ollama pull llama3.2 && pip install ollama   # one-time
+PYTHONPATH=src python3 examples/run_live.py
+```
+
+Llama 3.2 writes a genuine, stochastic rationale on the recording run (re-run it and the
+wording changes); the **replay reproduces that exact decision and audit trail with no model
+call**, printing `REPLAY byte-identical to the recording? YES`.
+
 ## Reproducibility, demonstrated
 
 `pytest` includes the property the whole approach rests on:
@@ -97,7 +111,8 @@ src/auditable_agents/
   audit.py          # render a human-readable audit trail from the log
   agent.py          # the model-reasoning step (stub model + pluggable real model)
   workflow.py       # the mock trade-pre-approval workflow
-examples/  run_demo.py  run_scenarios.py  bench.py  real_model.py
+examples/  run_demo.py  run_scenarios.py  bench.py
+           real_model.py  ollama_model.py  run_live.py   # real-model (Anthropic / Ollama)
 tests/     test_determinism.py  test_exactly_once.py  test_divergence.py
            test_input_sensitivity.py  test_saga_state.py
 scenarios/ approve.audit.txt  reject.audit.txt  rollback.audit.txt
